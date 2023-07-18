@@ -35,10 +35,8 @@ jobs:
     - run: |
         go build .
 
-  build-arm64-1:
+  build-trimpath-1:
     runs-on: ubuntu-22.04
-    env: 
-      GOARCH: arm64
     steps:
     - uses: actions/checkout@v3
       with:
@@ -48,10 +46,10 @@ jobs:
       with:
         go-version: '^1.20.6'
     - run: |
-        go build .
+        go build -trimpath .
 
-  build-arm64-2:
-    needs: [build-arm64-1]
+  build-trimpath-2:
+    needs: [build-trimpath-1]
     runs-on: ubuntu-22.04
     env: 
       GOARCH: arm64
@@ -65,4 +63,4 @@ jobs:
         go-version: '^1.20.6'
     # expect this to use the cached build, be very quick
     - run: |
-        go build .
+        go build -trimpath .
