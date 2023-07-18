@@ -3,8 +3,10 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  build-amd64-1:
     runs-on: ubuntu-22.04
+    env: 
+      GOARCH: amd64
     steps:
     - uses: actions/checkout@v3
       with:
@@ -14,4 +16,53 @@ jobs:
       with:
         go-version: '^1.20.6'
     - run: |
-        GOARCH=arm64 go build .
+        go build .
+
+  build-amd64-2:
+    needs: [build-amd64-1]
+    runs-on: ubuntu-22.04
+    env: 
+      GOARCH: amd64
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        repository: hashicorp/consul
+        ref: "v1.16.0"
+    - uses: actions/setup-go@v4
+      with:
+        go-version: '^1.20.6'
+    # expect this to use the cached build, be very quick
+    - run: |
+        go build .
+
+  build-arm64-1:
+    runs-on: ubuntu-22.04
+    env: 
+      GOARCH: arm64
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        repository: hashicorp/consul
+        ref: "v1.16.0"
+    - uses: actions/setup-go@v4
+      with:
+        go-version: '^1.20.6'
+    - run: |
+        go build .
+
+  build-arm64-2:
+    needs: [build-arm64-1]
+    runs-on: ubuntu-22.04
+    env: 
+      GOARCH: arm64
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        repository: hashicorp/consul
+        ref: "v1.16.0"
+    - uses: actions/setup-go@v4
+      with:
+        go-version: '^1.20.6'
+    # expect this to use the cached build, be very quick
+    - run: |
+        go build .
